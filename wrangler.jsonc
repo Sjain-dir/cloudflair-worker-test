@@ -1,0 +1,8 @@
+{
+	"name": "cloudflair-worker-test",
+	"main": "src/index.ts",
+	"compatibility_date": "2024-12-02",
+	"observability": {
+		"enabled": true
+	}
+}
