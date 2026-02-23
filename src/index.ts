@@ -18,7 +18,7 @@ export default {
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			]);
 
-			const targetUrl = `https://185.191.117.97/irisb?api-key=${API_KEY}&method=SendTransaction`;
+			const targetUrl = `https://185.191.117.97/irisb?api-key=${API_KEY}&method=sendTransaction`;
 
 			try {
 				const startTime = Date.now();
