@@ -1,38 +1,34 @@
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		if (request.method === "GET" && new URL(request.url).pathname === "/") {
-			return new Response("Worker is running. POST to /test to send a transaction test.", {
+			return new Response("Worker is running. POST to /test to send a binary transaction test.", {
 				headers: { "content-type": "text/plain" },
 			});
 		}
 
 		if (request.method === "POST" && new URL(request.url).pathname === "/test") {
-			const API_KEY = new URL(request.url).searchParams.get("api-key") || "APIKEY";
+			const url = new URL(request.url);
+			const API_KEY = url.searchParams.get("api-key") || "APIKEY";
+			const location = url.searchParams.get("location") || "fr";
 
-			const dummyBase64Txn = btoa("this_is_a_dummy_transaction_payload_for_testing");
+			// Dummy bytes to simulate a serialized transaction
+			const txBytes = new Uint8Array([
+				1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			]);
 
-			const payload = {
-				id: 1,
-				jsonrpc: "2.0",
-				method: "sendTransaction",
-				params: [
-					dummyBase64Txn,
-					{
-						encoding: "base64",
-						skipPreflight: true,
-					},
-					{ mevProtect: true },
-				],
-			};
-
-			const targetUrl = `https://fr.gateway.astralane.io/iris?api-key=${API_KEY}`;
+			const targetUrl = `https://${location}.gateway.astralane.io/irisb?api-key=${API_KEY}&method=SendTransaction`;
 
 			try {
 				const startTime = Date.now();
 				const response = await fetch(targetUrl, {
 					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(payload),
+					headers: {
+						"Content-Type": "application/octet-stream",
+					},
+					body: txBytes,
 				});
 				const elapsed = Date.now() - startTime;
 
@@ -40,8 +36,11 @@ export default {
 
 				return Response.json({
 					success: true,
-					request_sent: payload,
 					target_url: targetUrl,
+					request_info: {
+						content_type: "application/octet-stream",
+						body_size_bytes: txBytes.byteLength,
+					},
 					response: {
 						status: response.status,
 						statusText: response.statusText,
@@ -56,7 +55,6 @@ export default {
 				return Response.json({
 					success: false,
 					error: err.message,
-					request_sent: payload,
 					target_url: targetUrl,
 				}, {
 					status: 502,
