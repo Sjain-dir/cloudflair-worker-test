@@ -19,7 +19,7 @@ export default {
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			]);
 
-			const targetUrl = `https://${location}.gateway.astralane.io/irisb?api-key=${API_KEY}&method=SendTransaction`;
+			const targetUrl = `https://${location}.gateway.astralane.io/irisb?api-key=${API_KEY}&method=sendTransaction`;
 
 			try {
 				const startTime = Date.now();
