@@ -9,7 +9,6 @@ export default {
 		if (request.method === "POST" && new URL(request.url).pathname === "/test") {
 			const url = new URL(request.url);
 			const API_KEY = url.searchParams.get("api-key") || "APIKEY";
-			const location = url.searchParams.get("location") || "fr";
 
 			// Dummy bytes to simulate a serialized transaction
 			const txBytes = new Uint8Array([
@@ -19,7 +18,7 @@ export default {
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			]);
 
-			const targetUrl = `https://${location}.gateway.astralane.io/irisb?api-key=${API_KEY}&method=sendTransaction`;
+			const targetUrl = `https://185.191.117.97/irisb?api-key=${API_KEY}&method=SendTransaction`;
 
 			try {
 				const startTime = Date.now();
